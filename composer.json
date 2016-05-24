@@ -1,7 +1,19 @@
 {
     "name": "spire-framework/framework",
     "description": "HMVC Framework for PHP7",
+    "keywords": ["framework", "hmvc"],
+    "authors": [
+        {
+            "name": "Chris Pynegar",
+            "email": "chris@chrispynegar.com"
+        }
+    ],
     "require": {
         "php": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Spire\\": "src/Spire/"
+        }
     }
 }
