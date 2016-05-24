@@ -1,0 +1,7 @@
+{
+    "name": "spire-framework/framework",
+    "description": "HMVC Framework for PHP7",
+    "require": {
+        "php": "^7.0"
+    }
+}
