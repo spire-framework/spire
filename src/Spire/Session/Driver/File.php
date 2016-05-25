@@ -1,5 +1,5 @@
 <?php
-namespace Spire\Session;
+namespace Spire\Session\Driver;
 
 use Spire\Session\SessionInterface;
 
