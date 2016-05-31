@@ -17,17 +17,30 @@ class UriTest extends PHPUnit_Framework_TestCase
 
     public function testBase()
     {
+        $uri = Uri::base();
 
+        $this->assertInternalType('string', $uri);
     }
 
     public function testUri()
     {
+        $uri = Uri::uri();
 
+        $this->assertInternalType('string', $uri);
     }
 
     public function testSegments()
     {
+        $uri = Uri::segments();
 
+        $this->assertInternalType('array', $uri);
+    }
+
+    public function testUrl()
+    {
+        $uri = Uri::url();
+
+        $this->assertInternalType('string', $uri);
     }
 
     public function testSegment()
@@ -37,7 +50,9 @@ class UriTest extends PHPUnit_Framework_TestCase
 
     public function testSegmentString()
     {
+        $uri = Uri::segmentString();
 
+        $this->assertInternalType('string', $uri);
     }
 
 }
