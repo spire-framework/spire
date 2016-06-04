@@ -5,6 +5,11 @@ class Route
 {
 
     /**
+     * @var string The module we're setting routes for.
+     */
+    public static $module;
+
+    /**
      * Sets a GET route.
      *
      * @param  string  $uri      The URI to route.
@@ -15,6 +20,10 @@ class Route
     {
         if (static::validateOptions($options))
         {
+            // Set module.
+            if (!isset($options['module'])) $options['module'] = static::$module;
+
+            // Set route.
             Repository::store('get', $uri, $options);
             return true;
         }
@@ -33,6 +42,10 @@ class Route
      {
          if (static::validateOptions($options))
          {
+             // Set module.
+             if (!isset($options['module'])) $options['module'] = static::$module;
+
+             // Set route.
              Repository::store('post', $uri, $options);
              return true;
          }

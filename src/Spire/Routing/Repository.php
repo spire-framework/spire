@@ -42,9 +42,27 @@ class Repository
      * @param  string  $uri     The route URI.
      * @return array
      */
-    public static function retrieve(string $method, string $uri)
+    public static function retrieve(string $method, string $uri): array
     {
         return static::$stored[$method][$uri] ?? [];
+    }
+
+    /**
+     * Remove a stored route.
+     *
+     * @param  string  $method  The route method.
+     * @param  string  $uri     The route URI.
+     * @return bool
+     */
+    public static function remove(string $method, string $uri): bool
+    {
+        if (isset(static::$stored[$method][$uri]))
+        {
+            unset(static::$stored[$method][$uri]);
+            return true;
+        }
+
+        return false;
     }
 
 }

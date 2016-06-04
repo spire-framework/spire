@@ -14,6 +14,16 @@ class Session
     protected static $session;
 
     /**
+     * Initializes the session.
+     *
+     * @return \Spire\Session\SessionDriver
+     */
+    public static function initialize()
+    {
+        return static::make();
+    }
+
+    /**
      * Inserts data into a session.
      *
      * @param  string  $name  The name of the session.
