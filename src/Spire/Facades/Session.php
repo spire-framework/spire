@@ -24,6 +24,16 @@ class Session
     }
 
     /**
+     * Finalizes the session.
+     *
+     * @return bool
+     */
+    public static function finalize(): bool
+    {
+        return static::make()->driver()->finalize();
+    }
+
+    /**
      * Inserts data into a session.
      *
      * @param  string  $name  The name of the session.
