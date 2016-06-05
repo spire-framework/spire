@@ -5,9 +5,25 @@ use Spire\Config\Config;
 use Spire\Facades\Session;
 use Spire\Http\Request;
 use Spire\Http\Uri;
+use Spire\Template\Layout;
 
 class Router
 {
+
+    /**
+     * @var \Spire\Routing\Module The active module.
+     */
+    protected static $module;
+
+    /**
+     * Returns the active module.
+     *
+     * @return \Spire\Routing\Module
+     */
+    public static function module(): \Spire\Routing\Module
+    {
+        return static::$module;
+    }
 
     /**
      * Initializes the Spire framework.
@@ -47,10 +63,28 @@ class Router
         }
 
         // Instantiate the module.
-        $module = new Module($route);
+        static::$module = $module = new Module($route);
 
         // Run the module.
         $response = $module->run();
+
+        // Run the response.
+        if (is_object($response) && method_exists($response, 'respond'))
+        {
+            $response->respond();
+        }
+
+        // Do we have a layout to process?
+        $layout = $module->instance()->layout;
+
+        // Process layout.
+        if ($layout !== '')
+        {
+            echo Layout::get($layout);
+        }
+
+        // Finalize the session.
+        Session::finalize();
     }
 
     /**

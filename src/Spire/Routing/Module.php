@@ -60,6 +60,16 @@ class Module
     }
 
     /**
+     * Returns the module path.
+     *
+     * @return string
+     */
+    public function path(): string
+    {
+        return path('modules') . $this->module . '/';
+    }
+
+    /**
      * Runs the active controller action.
      *
      * @return mixed
