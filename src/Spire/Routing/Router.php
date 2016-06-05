@@ -2,6 +2,7 @@
 namespace Spire\Routing;
 
 use Spire\Config\Config;
+use Spire\Database\Database;
 use Spire\Facades\Session;
 use Spire\Http\Request;
 use Spire\Http\Uri;
@@ -34,6 +35,9 @@ class Router
     {
         // Load the application config.
         Config::file(path('config') . 'app.php');
+
+        // Attempt a database connection.
+        Database::initialize();
 
         // Initilize the session.
         Session::initialize();
@@ -83,8 +87,9 @@ class Router
             echo Layout::get($layout);
         }
 
-        // Finalize the session.
+        // Finalize classes.
         Session::finalize();
+        Database::finalize();
     }
 
     /**
