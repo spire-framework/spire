@@ -1,6 +1,9 @@
 <?php
 namespace Spire\Database;
 
+use \PDO;
+use \PDOException;
+
 class Statement
 {
 
@@ -32,7 +35,7 @@ class Statement
     public function prepare(string $sql): Statement
     {
         // Prepare the query.
-        $this->stmt = Database::conection()->prepare($sql);
+        $this->stmt = Database::connection()->prepare($sql);
 
         // Return class.
         return $this;
@@ -82,6 +85,46 @@ class Statement
     public function execute(): bool
     {
          return $this->stmt->execute();
+    }
+
+    /**
+     * Fetches a single result.
+     *
+     * @return object
+     */
+    public function fetch(): object
+    {
+        return $this->stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    /**
+     * Fetches all results.
+     *
+     * @return array
+     */
+    public function all(): array
+    {
+        return $this->stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    /**
+     * Fetches the number of results.
+     *
+     * @return int
+     */
+    public function count(): int
+    {
+        return $this->stmt->rowCount();
+    }
+
+    /**
+     * Returns error information associated with the last query.
+     *
+     * @return array
+     */
+    public function errors(): array
+    {
+        return $this->stmt->errorInfo();
     }
 
 }

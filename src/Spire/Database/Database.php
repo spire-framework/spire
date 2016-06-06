@@ -89,4 +89,14 @@ class Database
         return $connection ?? null;
     }
 
+    /**
+     * Gets the last inserted record ID.
+     *
+     * @return int
+     */
+    public static function insertId(): int
+    {
+        return (int) static::$connection->lastInsertId();
+    }
+
 }
