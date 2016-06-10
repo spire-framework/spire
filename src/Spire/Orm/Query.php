@@ -1,6 +1,7 @@
 <?php
-namespace Spire\Database;
+namespace Spire\Orm;
 
+use Spire\Database\Statement;
 use Spire\Exception\Exception;
 
 class Query
@@ -15,6 +16,11 @@ class Query
      * @var string The built SQL.
      */
     protected $sql = '';
+
+    /**
+     * @var \Spire\Orm\Model The model reference.
+     */
+    protected $model;
 
     /**
      * @var array The query INSERT clause.
@@ -59,12 +65,14 @@ class Query
     /**
      * Constructor.
      *
-     * @param  string  $table  The table name we're working with in this query.
+     * @param  string            $table  The table to query.
+     * @param  \Spire\Orm\Model  $model  The model to use.
      * @return void
      */
-    public function __construct(string $table = '')
+    public function __construct(string $table = '', $model = null)
     {
-        $this->table = $table;
+        $this->table    = $table;
+        $this->model    = $model;
     }
 
     /**
@@ -217,13 +225,14 @@ class Query
     /**
      * Select a table to query.
      *
-     * @param  string  $table  The table to query.
+     * @param  string            $table  The table to query.
+     * @param  \Spire\Orm\Model  $model  The model to use.
      * @return \Spire\Database\Query
      */
-    public static function table(string $table)
+    public static function table(string $table, $model = null)
     {
         $class = get_called_class();
-        return new $class($table);
+        return new $class($table, $model);
     }
 
 }
