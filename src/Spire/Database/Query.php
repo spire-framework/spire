@@ -32,6 +32,10 @@ class Query
     protected $where = [];
 
     /**
+     * @var array The query ORDER BY clause.
+     */
+
+    /**
      * @var \Spire\Database\Statement The query statement.
      */
     protected $stmt;
@@ -90,7 +94,7 @@ class Query
     }
 
     /**
-     * Sets the 'where' clause.
+     * Sets the WHERE clause.
      *
      * @param  string $column    The name of the column.
      * @param  string $operator  The clause operator.
@@ -100,6 +104,20 @@ class Query
     public function where(string $column, string $operator = '=', $value): Query
     {
         array_push($this->where, compact('column', 'operator', 'value'));
+
+        return $this;
+    }
+
+    /**
+     * Sets the ORDER BY clause.
+     *
+     * @param  string  $column     The column to order by.
+     * @param  string  $direction  The order direction.
+     * @return \Spire\Database\Query
+     */
+    public function orderBy(string $column, string $direction = 'asc'): Query
+    {
+        array_push($this->orderBy, compact('column', 'direction'));
 
         return $this;
     }
@@ -131,6 +149,12 @@ class Query
                 $this->sql .= Builder::select($this->select);
                 $this->sql .= Builder::from($this->table);
                 $this->sql .= Builder::where($this->where);
+                break;
+            case 'create':
+                $this->sql .= Build::insert($this->table, $this->insert);
+                break;
+            case 'describe':
+                $this->sql .= Build::describe($this->table);
                 break;
         }
 
@@ -171,6 +195,23 @@ class Query
 
         // Fetch results.
         return $this->stmt->all();
+    }
+
+    /**
+     * Fetches column information on the table.
+     *
+     * @return array
+     */
+    public function describe(): array
+    {
+        if ($this->run('describe'))
+        {
+            return $this->stmt->all();
+        }
+        else
+        {
+            return [];
+        }
     }
 
     /**

@@ -92,4 +92,15 @@ class Builder
         return $clause;
     }
 
+    /**
+     * Builds the DESCRIBE clause.
+     *
+     * @param  string  $table  The table name.
+     * @return string
+     */
+    public static function describe(string $table): string
+    {
+        return 'DESCRIBE ' . $table;
+    }
+
 }

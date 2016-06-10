@@ -1,7 +1,7 @@
 <?php
 namespace Spire\Routing;
 
-class Controller
+abstract class Controller
 {
 
     /**
