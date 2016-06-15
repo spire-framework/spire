@@ -1,5 +1,5 @@
 <?php
-namespace Spire\Database;
+namespace Spire\Orm;
 
 class Builder
 {

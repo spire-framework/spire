@@ -5,6 +5,11 @@ class Model
 {
 
     /**
+     * @var  string  The table name.
+     */
+    protected static $table = '';
+
+    /**
      * @var array Model attributes.
      */
     protected $attributes = [];
@@ -94,6 +99,18 @@ class Model
     public function save(): bool
     {
 
+    }
+
+    /**
+     * Instantiates a model query with the SELECT clause.
+     *
+     * @param  array  $fields  The fields to select.
+     * @return \Spire\Orm\Query
+     */
+    public static function select(array $fields): Query
+    {
+        $query = new Query(static::$table, get_called_class());
+        return $query->select($fields);
     }
 
 }

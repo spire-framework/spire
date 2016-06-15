@@ -8,46 +8,47 @@ class Query
 {
 
     /**
-     * @var string The table name.
+     * @var  string  The table name.
      */
     protected $table = '';
 
     /**
-     * @var string The built SQL.
+     * @var  string  The built SQL.
      */
     protected $sql = '';
 
     /**
-     * @var \Spire\Orm\Model The model reference.
+     * @var  string  The model reference.
      */
-    protected $model;
+    protected $model = '';
 
     /**
-     * @var array The query INSERT clause.
+     * @var  array  The query INSERT clause.
      */
     protected $insert = [];
 
     /**
-     * @var array The query SELECT clause.
+     * @var  array  The query SELECT clause.
      */
     protected $select = [];
 
     /**
-     * @var array The query WHERE clause.
+     * @var  array  The query WHERE clause.
      */
     protected $where = [];
 
     /**
-     * @var array The query ORDER BY clause.
+     * @var  array  The query ORDER BY clause.
      */
+    protected $orderBy = [];
 
     /**
-     * @var \Spire\Database\Statement The query statement.
+     * @var  \Spire\Database\Statement  The query statement.
      */
     protected $stmt;
 
     /**
-     * @var mixed The query result.
+     * @var  mixed  The query result.
      */
     protected $result;
 
@@ -65,11 +66,11 @@ class Query
     /**
      * Constructor.
      *
-     * @param  string            $table  The table to query.
-     * @param  \Spire\Orm\Model  $model  The model to use.
+     * @param  string  $table  The table to query.
+     * @param  string  $model  The model to use.
      * @return void
      */
-    public function __construct(string $table = '', $model = null)
+    public function __construct(string $table = '', string $model = '')
     {
         $this->table    = $table;
         $this->model    = $model;
@@ -202,7 +203,61 @@ class Query
         $this->run('read');
 
         // Fetch results.
-        return $this->stmt->all();
+        $fetched = $this->stmt->all();
+
+        // Do we need to assign results against a model.
+        if ($this->model !== null)
+        {
+            $records = [];
+            foreach ($fetched as $record)
+            {
+                $model = new $this->model;
+                foreach ($record as $attribute => $value)
+                {
+                    $model->$attribute = $value;
+                }
+
+                array_push($records, $model);
+            }
+        }
+        else
+        {
+            $records = $fetched;
+        }
+
+        // Fetch results.
+        return $records;
+    }
+
+    /**
+     * Fetches the first result.
+     *
+     * @return \Spire\Orm\Model
+     */
+    public function first(): \Spire\Orm\Model
+    {
+        // Execute the query.
+        $this->run('read');
+
+        // Fetch results.
+        $fetched = $this->stmt->fetch();
+
+        // Do we have a model to instantiate?
+        if ($this->model !== null && is_object($fetched))
+        {
+            $record = new $this->model;
+            foreach ($fetched as $attribute => $value)
+            {
+                $record->$attribute = $value;
+            }
+        }
+        else
+        {
+            $record = $fetched;
+        }
+
+        // Return record.
+        return $record;
     }
 
     /**
@@ -225,11 +280,11 @@ class Query
     /**
      * Select a table to query.
      *
-     * @param  string            $table  The table to query.
-     * @param  \Spire\Orm\Model  $model  The model to use.
+     * @param  string  $table  The table to query.
+     * @param  string  $model  The model to use.
      * @return \Spire\Database\Query
      */
-    public static function table(string $table, $model = null)
+    public static function table(string $table, string $model = '')
     {
         $class = get_called_class();
         return new $class($table, $model);

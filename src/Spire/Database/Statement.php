@@ -92,7 +92,7 @@ class Statement
      *
      * @return object
      */
-    public function fetch(): object
+    public function fetch(): \stdClass
     {
         return $this->stmt->fetch(PDO::FETCH_OBJ);
     }
