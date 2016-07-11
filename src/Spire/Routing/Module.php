@@ -98,4 +98,29 @@ class Module
         }
     }
 
+    /**
+     * Gets all the valid modules.
+     *
+     * @return array
+     */
+    public static function all(): array
+    {
+        $modules = [];
+
+        foreach (scandir(path('modules')) as $module)
+        {
+            // Ignore hidden directories.
+            if ($module === '.' || $module === '..') continue;
+
+            // Does the module have a valid module.php?
+            if (is_file(path('modules', $module) . 'module.php'))
+            {
+                // Add it to the modules array.
+                array_push($modules, $module);
+            }
+        }
+
+        return $modules;
+    }
+
 }

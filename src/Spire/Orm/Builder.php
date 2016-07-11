@@ -26,6 +26,24 @@ class Builder
     }
 
     /**
+     * Builds the UPDATE clause.
+     *
+     * @param  string  $table       Table to insert data into.
+     * @param  array   $attributes  The fields and values to update.
+     */
+    public static function update(string $table, array $attributes): string
+    {
+        $set = [];
+
+        foreach (array_keys($attributes) as $column)
+        {
+            array_push($set, '`' . $column . '` = :' . $column);
+        }
+
+        return 'UPDATE ' . $table . ' SET ' . implode(', ', $set);
+    }
+
+    /**
      * Builds the SELECT clause.
      *
      * @param  array  $fields  The fields to select.

@@ -28,6 +28,11 @@ class Query
     protected $insert = [];
 
     /**
+     * @var  array  The query UPDATE clause.
+     */
+    protected $update = [];
+
+    /**
      * @var  array  The query SELECT clause.
      */
     protected $select = [];
@@ -85,6 +90,19 @@ class Query
     public function insert(array $data)
     {
         $this->insert = array_merge($this->insert, $data);
+
+        return $this;
+    }
+
+    /**
+     * Sets the UPDATE clause.
+     *
+     * @param  array  $data  The data to update.
+     * @return \Spire\Database\Query
+     */
+    public function update(array $data)
+    {
+        $this->update = array_merge($this->update, $data);
 
         return $this;
     }
@@ -160,10 +178,14 @@ class Query
                 $this->sql .= Builder::where($this->where);
                 break;
             case 'create':
-                $this->sql .= Build::insert($this->table, $this->insert);
+                $this->sql .= Builder::insert($this->table, $this->insert);
+                break;
+            case 'update':
+                $this->sql .= Builder::update($this->table, $this->update);
+                $this->sql .= Builder::where($this->where);
                 break;
             case 'describe':
-                $this->sql .= Build::describe($this->table);
+                $this->sql .= Builder::describe($this->table);
                 break;
         }
 
@@ -177,9 +199,10 @@ class Query
         }
 
         // Do we need to bind INSERT values.
-        if ($method === 'create')
+        if ($method === 'create' || $method === 'update')
         {
-            foreach ($this->insert as $key => $value)
+            $property = $method === 'create' ? 'insert' : 'update';
+            foreach ($this->$property as $key => $value)
             {
                 $this->stmt->bind(':' . $key, $value);
             }
@@ -190,6 +213,38 @@ class Query
 
         // Return object.
         return $this;
+    }
+
+    /**
+     * Creates a record.
+     *
+     * @param  array  $attributes  Attributes to insert into the record,
+     * @return bool
+     */
+    public function create(array $attributes = []): bool
+    {
+        if (!empty($attributes))
+        {
+            $this->insert($attributes);
+        }
+
+        return $this->run('create') ? true : false;
+    }
+
+    /**
+     * Updates a record.
+     *
+     * @param  array  $attributes  Attributes to insert into the record,
+     * @return bool
+     */
+    public function edit(array $attributes = []): bool
+    {
+        if (!empty($attributes))
+        {
+            $this->update($attributes);
+        }
+
+        return $this->run('update') ? true : false;
     }
 
     /**

@@ -1,6 +1,8 @@
 <?php
 namespace Spire\Orm;
 
+use Spire\Database\Database;
+
 class Model
 {
 
@@ -13,6 +15,11 @@ class Model
      * @var array Model attributes.
      */
     protected $attributes = [];
+
+    /**
+     * @var array Protected attributes that won't get passed via the save method.
+     */
+    protected $guarded = ['id'];
 
     /**
      * Constructor.
@@ -98,7 +105,52 @@ class Model
      */
     public function save(): bool
     {
+        // Get the model attributes.
+        $attributes = $this->attributes();
 
+        // Remove guarded attributes.
+        foreach ($this->guarded as $guarded)
+        {
+            if (isset($attributes[$guarded]))
+            {
+                unset($attributes[$guarded]);
+            }
+        }
+
+        // Instantiate query.
+        $query  = static::query();
+
+        // If we have an id then update the record.
+        if ($this->hasAttribute('id'))
+        {
+            $query  = $query->where('id', '=', $this->getAttribute('id'));
+            $saved  = $query->edit($attributes);
+        }
+        // Otherwise create a new record.
+        else
+        {
+            $saved  = $query->create($attributes);
+
+            // If successfully created, add the insert id.
+            if ($saved)
+            {
+                $this->setAttribute('id', Database::insertId());
+            }
+        }
+
+        // Return true if successfully saved.
+        return $saved;
+    }
+
+    /**
+     * Gets all records from the table.
+     *
+     * @return array
+     */
+    public static function all(): array
+    {
+        $query = static::query();
+        return $query->all();
     }
 
     /**
@@ -109,8 +161,32 @@ class Model
      */
     public static function select(array $fields): Query
     {
-        $query = new Query(static::$table, get_called_class());
+        $query = static::query();
         return $query->select($fields);
+    }
+
+    /**
+     * Instantiates a model query with the WHERE clause.
+     *
+     * @param  string $column    The name of the column.
+     * @param  string $operator  The clause operator.
+     * @param  mixed  $value     The value to check against the column.
+     * @return \Spire\Database\Query
+     */
+    public static function where(string $column, string $operator = '=', $value): Query
+    {
+        $query = static::query();
+        return $query->where($column, $operator, $value);
+    }
+
+    /**
+     * Instantiates a new query for this table.
+     *
+     * @return \Spire\Orm\Query
+     */
+    public static function query(): Query
+    {
+        return new Query(static::$table, get_called_class());
     }
 
 }

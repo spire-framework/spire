@@ -1,9 +1,6 @@
 <?php
 namespace Spire\Routing;
 
-use Spire\Config\Config;
-use Spire\Database\Database;
-use Spire\Facades\Session;
 use Spire\Http\Request;
 use Spire\Http\Uri;
 use Spire\Template\Layout;
@@ -33,26 +30,8 @@ class Router
      */
     public static function initialize()
     {
-        // Load the application config.
-        Config::file(path('config') . 'app.php');
-
-        // Attempt a database connection.
-        Database::initialize();
-
-        // Initilize the session.
-        Session::initialize();
-
-        // Assign class aliases.
-        $aliases = Config::item('aliases');
-
-        // Check aliases is a valid array first.
-        if (is_array($aliases))
-        {
-            foreach ($aliases as $alias => $class)
-            {
-                class_alias($class, $alias);
-            }
-        }
+        // Start the system.
+        Spire::start();
 
         // Load routes.
         static::routes();
@@ -87,9 +66,8 @@ class Router
             echo Layout::get($layout);
         }
 
-        // Finalize classes.
-        Session::finalize();
-        Database::finalize();
+        // Close Spire.
+        Spire::close();
     }
 
     /**
