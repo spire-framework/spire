@@ -1,6 +1,7 @@
 <?php
 namespace Spire\Routing;
 
+use Spire\Auth\Auth;
 use Spire\Config\Config;
 use Spire\Database\Database;
 use Spire\Facades\Session;
@@ -23,6 +24,9 @@ class Spire
 
         // Initilize the session.
         Session::initialize();
+
+        // Initialize auth.
+        Auth::initialize();
 
         // Assign class aliases.
         $aliases = Config::item('aliases');
