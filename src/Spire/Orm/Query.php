@@ -287,15 +287,18 @@ class Query
     /**
      * Fetches the first result.
      *
-     * @return \Spire\Orm\Model
+     * @return \Spire\Orm\Model|bool
      */
-    public function first(): \Spire\Orm\Model
+    public function first()
     {
         // Execute the query.
         $this->run('read');
 
         // Fetch results.
         $fetched = $this->stmt->fetch();
+
+        // Don't continue if fetched is null.
+        if ($fetched === false) return false;
 
         // Do we have a model to instantiate?
         if ($this->model !== null && is_object($fetched))

@@ -49,9 +49,9 @@ class Session
      * Gets data from a session.
      *
      * @param  string  $name  The name of the session.
-     * @return \Spire\Session\SessionDriver
+     * @return mixed
      */
-    public static function get(string $name): SessionDriver
+    public static function get(string $name)
     {
         return static::make()->driver()->get($name);
     }

@@ -8,6 +8,11 @@ class Statement
 {
 
     /**
+     * @var string SQL query.
+     */
+    protected $sql = '';
+
+    /**
      * @var object PDO statement.
      */
     protected $stmt;
@@ -35,7 +40,7 @@ class Statement
     public function prepare(string $sql): Statement
     {
         // Prepare the query.
-        $this->stmt = Database::connection()->prepare($sql);
+        $this->stmt = Database::connection()->prepare($this->sql = $sql);
 
         // Return class.
         return $this;
@@ -84,15 +89,27 @@ class Statement
      */
     public function execute(): bool
     {
-         return $this->stmt->execute();
+        try {
+            return $this->stmt->execute();
+        } catch (PDOException $error) {
+
+            echo '<h1>MySQL Error</h1>';
+            echo '<p>' . $error->errorInfo[2] . '</p>';
+            echo '<h3>Last Query</h3>';
+            echo '<p>' . $this->sql . '</p>';
+            exit;
+
+        }
+
+        return $this->stmt->execute();
     }
 
     /**
      * Fetches a single result.
      *
-     * @return object
+     * @return object|bool
      */
-    public function fetch(): \stdClass
+    public function fetch()
     {
         return $this->stmt->fetch(PDO::FETCH_OBJ);
     }
