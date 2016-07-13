@@ -5,6 +5,7 @@ use Spire\Auth\Auth;
 use Spire\Config\Config;
 use Spire\Database\Database;
 use Spire\Facades\Session;
+use Spire\Http\Uri;
 
 class Spire
 {
@@ -18,6 +19,9 @@ class Spire
     {
         // Load the application config.
         Config::file(path('config') . 'app.php');
+
+        // Initialize the URI.
+        Uri::initialize();
 
         // Attempt a database connection.
         Database::initialize();
